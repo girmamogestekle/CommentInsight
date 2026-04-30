@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<modelVersion>4.0.0</modelVersion>
+
+<!-- Parent reference -->
+<parent>
+    <groupId>com.comment.insight</groupId>
+    <artifactId>comment-insight-parent</artifactId>
+    <version>1.0.0</version>
+</parent>
+
+<artifactId>discovery-service</artifactId>
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+</project>
