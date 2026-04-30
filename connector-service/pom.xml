@@ -48,6 +48,13 @@
         <artifactId>spring-cloud-starter-loadbalancer</artifactId>
     </dependency>
 
+    <!-- Comment Insight Common DTOs, Exceptions and Enums -->
+    <dependency>
+        <groupId>com.comment.insight</groupId>
+        <artifactId>comment-insight-common</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
     <!-- Test -->
     <dependency>
         <groupId>org.springframework.boot</groupId>

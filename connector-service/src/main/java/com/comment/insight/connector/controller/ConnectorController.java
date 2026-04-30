@@ -1,7 +1,7 @@
 package com.comment.insight.connector.controller;
 
+import com.comment.insight.common.dto.PlatformCommentResponse;
 import com.comment.insight.connector.dto.PlatformCommentRequest;
-import com.comment.insight.connector.dto.PlatformCommentResponse;
 import com.comment.insight.connector.service.ConnectorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

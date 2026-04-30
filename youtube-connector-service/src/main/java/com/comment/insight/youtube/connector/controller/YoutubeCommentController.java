@@ -1,7 +1,7 @@
 package com.comment.insight.youtube.connector.controller;
 
-import com.comment.insight.youtube.connector.dto.YoutubeCommentRequest;
-import com.comment.insight.youtube.connector.dto.YoutubeCommentResponse;
+import com.comment.insight.common.dto.PlatformCommentResponse;
+import com.comment.insight.common.dto.RequestUrlDto;
 import com.comment.insight.youtube.connector.service.YoutubeCommentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,7 @@ public class YoutubeCommentController {
     }
 
     @PostMapping("/comments")
-    public YoutubeCommentResponse fetchComments(@Valid @RequestBody YoutubeCommentRequest request) {
-        System.out.println("YoutubeCommentController.fetchComments()" + request.toString());
+    public PlatformCommentResponse fetchComments(@Valid @RequestBody RequestUrlDto request) {
         return youtubeCommentService.fetchComments(request.getUrl());
     }
 }

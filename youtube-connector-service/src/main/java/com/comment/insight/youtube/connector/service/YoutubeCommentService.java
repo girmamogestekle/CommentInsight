@@ -1,6 +1,8 @@
 package com.comment.insight.youtube.connector.service;
 
-import com.comment.insight.youtube.connector.dto.YoutubeCommentResponse;
+import com.comment.insight.common.dto.PlatformCommentResponse;
+import com.comment.insight.common.enums.SourceType;
+import com.comment.insight.common.exception.InvalidUrlException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -22,14 +24,14 @@ public class YoutubeCommentService {
                 .build();
     }
 
-    public YoutubeCommentResponse fetchComments(String videoUrl) {
+    public PlatformCommentResponse fetchComments(String videoUrl) {
 
         String videoId = extractVideoId(videoUrl);
 
         int totalComments = getTotalCommentCount(videoId);
 
-        return new YoutubeCommentResponse(
-                "YOUTUBE",
+        return new PlatformCommentResponse(
+                SourceType.YOUTUBE.name(),
                 videoId,
                 videoUrl,
                 totalComments
@@ -60,6 +62,10 @@ public class YoutubeCommentService {
     }
 
     private String extractVideoId(String videoUrl) {
+        if (videoUrl == null || videoUrl.isBlank()) {
+            throw new InvalidUrlException("YouTube video URL is required");
+        }
+
         if (videoUrl.contains("watch?v=")) {
             return videoUrl.substring(videoUrl.indexOf("watch?v=") + 8).split("&")[0];
         }
@@ -68,6 +74,6 @@ public class YoutubeCommentService {
             return videoUrl.substring(videoUrl.indexOf("youtu.be/") + 9).split("\\?")[0];
         }
 
-        throw new IllegalArgumentException("Invalid YouTube video URL");
+        throw new InvalidUrlException("Invalid YouTube video URL");
     }
 }
