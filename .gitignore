@@ -1,0 +1,56 @@
+# =========================
+# Maven / Java
+# =========================
+target/
+build/
+*.log
+*.class
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# IDEs
+# =========================
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+
+# =========================
+# Secrets / Config
+# =========================
+**/credential.properties
+**/application-local.properties
+.env
+
+# =========================
+# Allow important configs
+# =========================
+!**/application.properties
