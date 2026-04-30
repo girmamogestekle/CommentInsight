@@ -46,7 +46,7 @@ build/
 # =========================
 # Secrets / Config
 # =========================
-**/credential.properties
+**/credentials.properties
 **/application-local.properties
 .env
 
