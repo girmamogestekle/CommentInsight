@@ -1,4 +1,4 @@
-package com.comment.insight.connector.dto;
+package com.comment.insight.common.dto;
 
 public class PlatformCommentResponse {
 
@@ -8,6 +8,13 @@ public class PlatformCommentResponse {
     private int totalComments;
 
     public PlatformCommentResponse() {
+    }
+
+    public PlatformCommentResponse(String source, String sourceId, String sourceUrl, int totalComments) {
+        this.source = source;
+        this.sourceId = sourceId;
+        this.sourceUrl = sourceUrl;
+        this.totalComments = totalComments;
     }
 
     public String getSource() {
@@ -41,5 +48,4 @@ public class PlatformCommentResponse {
     public void setTotalComments(int totalComments) {
         this.totalComments = totalComments;
     }
-
 }
