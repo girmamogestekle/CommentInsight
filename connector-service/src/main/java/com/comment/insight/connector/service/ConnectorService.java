@@ -6,6 +6,7 @@ import com.comment.insight.common.enums.SourceType;
 import com.comment.insight.common.exception.ConnectorCommunicationException;
 import com.comment.insight.common.exception.UnsupportedSourceException;
 import com.comment.insight.connector.dto.PlatformCommentRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -14,6 +15,8 @@ import org.springframework.web.client.RestClientException;
 public class ConnectorService {
 
     private final RestClient restClient;
+    @Value("${connector.youtube-service-url}")
+    private String youtubeConnectorServiceUrl;
 
     public ConnectorService(RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder.build();
@@ -27,7 +30,7 @@ public class ConnectorService {
         if (SourceType.YOUTUBE.name().equalsIgnoreCase(request.getSource())) {
             try{
                 return restClient.post()
-                        .uri("http://youtube-connector-service/api/youtube/v1/comments")
+                        .uri(youtubeConnectorServiceUrl.concat("/v1/comments"))
                         .body(new RequestUrlDto(request.getUrl()))
                         .retrieve()
                         .body(PlatformCommentResponse.class);
@@ -50,7 +53,7 @@ public class ConnectorService {
 
         try {
             return restClient.get()
-                    .uri("http://youtube-connector-service/api/youtube/v1/health")
+                    .uri(youtubeConnectorServiceUrl.concat("/v1/health"))
                     .retrieve()
                     .body(String.class);
         } catch (RestClientException ex) {

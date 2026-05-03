@@ -14,14 +14,16 @@ import java.util.Map;
 public class YoutubeCommentService {
 
     private final RestClient restClient;
+    private final String youtubeApiKey;
 
-    @Value("${youtube.api.key}")
-    private String youtubeApiKey;
-
-    public YoutubeCommentService(RestClient.Builder restClientBuilder) {
+    public YoutubeCommentService(RestClient.Builder restClientBuilder,
+                                 @Value("${youtube.api.base-url}") String youtubeApiBaseUrl,
+                                 @Value("${youtube.api.key}") String youtubeApiKey) {
         this.restClient = restClientBuilder
-                .baseUrl("https://www.googleapis.com/youtube/v3")
+                .baseUrl(youtubeApiBaseUrl)
                 .build();
+
+        this.youtubeApiKey = youtubeApiKey;
     }
 
     public PlatformCommentResponse fetchComments(String videoUrl) {
@@ -39,7 +41,6 @@ public class YoutubeCommentService {
     }
 
     private int getTotalCommentCount(String videoId) {
-
         Map response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/videos")
