@@ -1,7 +1,7 @@
 package com.comment.insight.connector.controller;
 
-import com.comment.insight.common.dto.PlatformCommentResponse;
-import com.comment.insight.connector.dto.PlatformCommentRequest;
+import com.comment.insight.common.dto.PlatformCommentPageResponse;
+import com.comment.insight.connector.dto.CommentFetchPageRequest;
 import com.comment.insight.connector.service.ConnectorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ public class ConnectorController {
         this.connectorService = connectorService;
     }
 
-    @PostMapping("/comments")
-    public PlatformCommentResponse fetchComments(@Valid @RequestBody PlatformCommentRequest request) {
-        return connectorService.fetchComments(request);
+    @PostMapping("/comments/page")
+    public PlatformCommentPageResponse fetchCommentsPage(@Valid @RequestBody CommentFetchPageRequest request) {
+        return connectorService.fetchCommentsPage(request);
     }
 
     @GetMapping("/health/youtube")

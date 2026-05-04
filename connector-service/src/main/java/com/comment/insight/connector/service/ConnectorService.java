@@ -1,11 +1,11 @@
 package com.comment.insight.connector.service;
 
-import com.comment.insight.common.dto.PlatformCommentResponse;
-import com.comment.insight.common.dto.RequestUrlDto;
+import com.comment.insight.common.dto.PlatformCommentPageResponse;
+import com.comment.insight.common.dto.PageRequestDto;
 import com.comment.insight.common.enums.SourceType;
 import com.comment.insight.common.exception.ConnectorCommunicationException;
 import com.comment.insight.common.exception.UnsupportedSourceException;
-import com.comment.insight.connector.dto.PlatformCommentRequest;
+import com.comment.insight.connector.dto.CommentFetchPageRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -25,15 +25,20 @@ public class ConnectorService {
     // ================================
     // Fetch Comments (existing)
     // ================================
-    public PlatformCommentResponse fetchComments(PlatformCommentRequest request) {
+    public PlatformCommentPageResponse fetchCommentsPage(CommentFetchPageRequest request) {
 
         if (SourceType.YOUTUBE.name().equalsIgnoreCase(request.getSource())) {
             try{
+                PageRequestDto pageRequest = new PageRequestDto();
+                pageRequest.setUrl(request.getUrl());
+                pageRequest.setPageSize(request.getPageSize());
+                pageRequest.setPageToken(request.getPageToken());
+
                 return restClient.post()
-                        .uri(youtubeConnectorServiceUrl.concat("/v1/comments"))
-                        .body(new RequestUrlDto(request.getUrl()))
+                        .uri(youtubeConnectorServiceUrl.concat("/v1/comments/page"))
+                        .body(pageRequest)
                         .retrieve()
-                        .body(PlatformCommentResponse.class);
+                        .body(PlatformCommentPageResponse.class);
             } catch(RestClientException ex){
                 throw new ConnectorCommunicationException(
                         "Failed to communicate with YouTube Connector Service: " + ex.getMessage()

@@ -1,7 +1,7 @@
 package com.comment.insight.youtube.connector.controller;
 
-import com.comment.insight.common.dto.PlatformCommentResponse;
-import com.comment.insight.common.dto.RequestUrlDto;
+import com.comment.insight.common.dto.PlatformCommentPageResponse;
+import com.comment.insight.common.dto.PageRequestDto;
 import com.comment.insight.youtube.connector.service.YoutubeCommentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,8 @@ public class YoutubeCommentController {
         return "YouTube Connector Service is running";
     }
 
-    @PostMapping("/comments")
-    public PlatformCommentResponse fetchComments(@Valid @RequestBody RequestUrlDto request) {
-        return youtubeCommentService.fetchComments(request.getUrl());
+    @PostMapping("/comments/page")
+    public PlatformCommentPageResponse fetchCommentsPage(@Valid @RequestBody PageRequestDto request) {
+        return youtubeCommentService.fetchCommentsPage(request);
     }
 }

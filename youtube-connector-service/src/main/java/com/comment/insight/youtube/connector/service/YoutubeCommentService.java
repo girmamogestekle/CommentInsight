@@ -1,12 +1,15 @@
 package com.comment.insight.youtube.connector.service;
 
-import com.comment.insight.common.dto.PlatformCommentResponse;
+import com.comment.insight.common.dto.PageRequestDto;
+import com.comment.insight.common.dto.PlatformCommentDto;
+import com.comment.insight.common.dto.PlatformCommentPageResponse;
 import com.comment.insight.common.enums.SourceType;
 import com.comment.insight.common.exception.InvalidUrlException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,17 +29,46 @@ public class YoutubeCommentService {
         this.youtubeApiKey = youtubeApiKey;
     }
 
-    public PlatformCommentResponse fetchComments(String videoUrl) {
+    public PlatformCommentPageResponse fetchCommentsPage(PageRequestDto request) {
 
-        String videoId = extractVideoId(videoUrl);
+        String videoId = extractVideoId(request.getUrl());
+
+        int pageSize = request.getPageSize() == null ? 20 : request.getPageSize();
+        pageSize = Math.min(pageSize, 100);
 
         int totalComments = getTotalCommentCount(videoId);
 
-        return new PlatformCommentResponse(
+        int finalPageSize = pageSize;
+        Map response = restClient.get()
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder
+                            .path("/commentThreads")
+                            .queryParam("part", "snippet")
+                            .queryParam("videoId", videoId)
+                            .queryParam("maxResults", finalPageSize)
+                            .queryParam("textFormat", "plainText")
+                            .queryParam("key", youtubeApiKey);
+
+                    if (request.getPageToken() != null && !request.getPageToken().isBlank()) {
+                        builder.queryParam("pageToken", request.getPageToken());
+                    }
+
+                    return builder.build();
+                })
+                .retrieve()
+                .body(Map.class);
+
+        List<PlatformCommentDto> comments = parsePlatformComments(response);
+
+        String nextPageToken = response == null ? null : (String) response.get("nextPageToken");
+
+        return new PlatformCommentPageResponse(
                 SourceType.YOUTUBE.name(),
                 videoId,
-                videoUrl,
-                totalComments
+                request.getUrl(),
+                totalComments,
+                nextPageToken,
+                comments
         );
     }
 
@@ -77,4 +109,46 @@ public class YoutubeCommentService {
 
         throw new InvalidUrlException("Invalid YouTube video URL");
     }
+
+    private List<PlatformCommentDto> parsePlatformComments(Map response) {
+
+        List<PlatformCommentDto> comments = new ArrayList<>();
+
+        if (response == null || response.get("items") == null) {
+            return comments;
+        }
+
+        List<Map<String, Object>> items =
+                (List<Map<String, Object>>) response.get("items");
+
+        for (Map<String, Object> item : items) {
+            String commentId = (String) item.get("id");
+
+            Map<String, Object> snippet =
+                    (Map<String, Object>) item.get("snippet");
+
+            Map<String, Object> topLevelComment =
+                    (Map<String, Object>) snippet.get("topLevelComment");
+
+            Map<String, Object> commentSnippet =
+                    (Map<String, Object>) topLevelComment.get("snippet");
+
+            String authorName = (String) commentSnippet.get("authorDisplayName");
+            String text = (String) commentSnippet.get("textDisplay");
+            Integer likeCount = (Integer) commentSnippet.get("likeCount");
+            String publishedAt = (String) commentSnippet.get("publishedAt");
+
+            comments.add(new PlatformCommentDto(
+                    commentId,
+                    authorName,
+                    text,
+                    likeCount,
+                    publishedAt,
+                    Map.of("platform", "youtube")
+            ));
+        }
+
+        return comments;
+    }
+
 }
