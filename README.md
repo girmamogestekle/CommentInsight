@@ -59,20 +59,88 @@ User Input (YouTube URL)
 
 ---
 
-## 🧰 Tech Stack
-> Backend: Java 17 ▪ Spring Boot ▪ Spring Cloud (Eureka, API Gateway)
-<!-- Spring Data JPA
-AI / NLP
-Spring AI / OpenAI API (optional)
-Python (optional NLP service)
-Data Source
-YouTube Data API v3
-Database
-MySQL / PostgreSQL
-DevOps
-Docker & Docker Compose
-GitHub Actions (CI/CD)
-Grafana + Loki + Promtail (Monitoring & Logging) -->
+## ⚡ System Features & Infrastructure
+
+### 🔄 Pagination Support
+
+The platform supports scalable pagination using reusable shared DTOs.
+
+#### Supported Pagination Features
+
+* `pageSize`
+* `pageToken`
+* `nextPageToken`
+* `hasNextPage`
+
+### ☁️ Centralized Configuration
+
+Configurations are managed using:
+
+* Spring Cloud Config Server
+* Private Git configuration repository
+
+#### Supported Environments
+
+* `dev`
+* `qa`
+* `prod`
+
+### 🔐 Secure Secret Management
+
+Secrets are securely managed using:
+
+* HashiCorp HCP Vault Dedicated
+
+#### Sensitive Values Stored Securely
+
+* API keys
+* Git tokens
+* JWT secrets
+* Database passwords
+
+### 🛡️ Resilience Patterns
+
+Implemented resilience features include:
+
+* Circuit Breaker
+* Retry
+* Rate Limiting
+* Service Discovery
+
+#### Technologies
+
+* Resilience4j
+* Redis
+* Eureka
+* Spring Cloud Gateway
+
+### 🧱 Technologies Used
+
+#### Backend
+
+* Java 17
+* Spring Boot 3
+* Spring Cloud
+* Maven
+
+#### Microservices
+
+* Eureka Discovery Server
+* Spring Cloud Gateway
+* Spring Cloud Config Server
+* Resilience4j
+
+#### AI
+
+* Spring AI *(planned)*
+* OpenAI API *(planned)*
+
+#### Infrastructure
+
+* Redis
+* HashiCorp Vault
+* GitHub
+* HCP Vault Dedicated
 
 ---
 
