@@ -1,129 +1,401 @@
-# 📊 CommentInsight: AI-Powered Comment Intelligence Platform
-
 [![Java](https://img.shields.io/badge/Java-17-blue)](https://openjdk.org/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen)](https://spring.io/projects/spring-boot)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)](https://spring.io/projects/spring-ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
 <!-- [![Swagger UI](https://img.shields.io/badge/Docs-Swagger_UI-blue)](https://girmamogestekle.github.io/Post-Comments-App/)
 [![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/workflow.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=postEntity-comments-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=postEntity-comments-app)
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/postEntity-comments-app) -->
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
 
+# 🚀 CommentInsight 
+AI-Powered Comment Intelligence & Sentiment Analysis Platform
+```
+Scalable microservices platform for collecting, analyzing, and summarizing comments from social media platforms and websites using AI.
+```
 ---
 
 ## 🚀 Overview
-CommentInsight is an AI-powered platform that collects and analyzes comments from online platforms to extract meaningful insights.
+CommentInsight is an AI-powered microservices platform designed to collect, analyze, and summarize user comments from several platforms and websites. The system fetches comments from platforms such as YouTube and uses AI-driven sentiment analysis to generate audience insights including positive, negative, and neutral summaries, content recommendations, and overall audience reactions.
 
-The system currently supports YouTube comment analysis, where it automatically fetches comments from a given video URL and classifies them into positive, negative, or neutral. It then generates a human-readable conclusion summarizing public opinion.
-
-The platform is designed with a scalable microservices architecture, enabling future support for social media, e-commerce platforms, blogs, and other websites with comment sections.
+Built with Spring Boot microservices architecture, centralized configuration management, API Gateway routing, service discovery, resilience patterns, and secure cloud-based secret management, the platform is designed to be scalable, extensible, and ready for future AI-powered analytics across multiple platforms including Reddit, Amazon Reviews, TikTok, and more.
 
 ---
 
-## 🎯 Key Features
-##### 📥 Automatic Comment Extraction
-> Fetch comments directly from YouTube using API
-<!-- ##### 🔍 Sentiment Analysis
-Classify comments as Positive, Negative, or Neutral
-##### 🧠 AI-Powered Insight Generation
-Generate natural language summaries from user comments
-##### 🔗 RESTful APIs
-Analyze comments by simply providing a video URL
-##### 🏗️ Microservices Architecture
-Modular and scalable system design
-##### 🔄 Extensible Platform
-Easily add support for other platforms (Reddit, Amazon, blogs, etc.) -->
+## 🏗️ Architecture & Design Principles
 
----
+### System Architecture
 
-## 🏛️ Architecture
-```
-User Input (YouTube URL)
+```text
+Client (Postman / Frontend)
         ↓
-+---------------------------+
-|   API Gateway             |
-+-------------+-------------+
+API Gateway
+        ↓
+Connector Service
+        ↓
+Platform Connector Services
+        ↓
+External APIs
+        ↓
+AI Sentiment Service
 ```
+
+### 🧩 Microservices Structure
+
+```text
+comment-insight-parent
+├── comment-insight-common
+├── config-server
+├── discovery-service
+├── api-gateway-service
+├── connector-service
+├── youtube-connector-service
+└── sentiment-service
+```
+
+### 🏆 Architecture Principles
+
+* Microservices architecture
+* Separation of concerns
+* Shared DTO design
+* Platform abstraction
+* Externalized configuration
+* Secure secret management
+* Environment isolation
+* Scalable pagination
+* AI extensibility
 
 ---
 
-## 🔄 System Flow
-1. User provides YouTube video URL
-2. System fetches comments via API
-<!-- 3. Comments are cleaned and processed
-4. Sentiment analysis is applied
-5. AI generates a final conclusion
-6. Results are returned via API or UI  -->
+## ⚡ System Features & Infrastructure
+
+### 🔄 Pagination Support
+
+The platform supports scalable pagination using reusable shared DTOs.
+
+#### Supported Pagination Features
+
+* `pageSize`
+* `pageToken`
+* `nextPageToken`
+* `hasNextPage`
+
+### ☁️ Centralized Configuration
+
+Configurations are managed using:
+
+* Spring Cloud Config Server
+* Private Git configuration repository
+
+#### Supported Environments
+
+* `dev`
+* `qa`
+* `prod`
+
+### 🔐 Secure Secret Management
+
+Secrets are securely managed using:
+
+* HashiCorp HCP Vault Dedicated
+
+#### Sensitive Values Stored Securely
+
+* API keys
+* Git tokens
+* JWT secrets
+* Database passwords
+
+### 🛡️ Resilience Patterns
+
+Implemented resilience features include:
+
+* Circuit Breaker
+* Retry
+* Rate Limiting
+* Service Discovery
+
+#### Technologies
+
+* Resilience4j
+* Redis
+* Eureka
+* Spring Cloud Gateway
+
+### 🧱 Technologies Used
+
+#### Backend
+
+* Java 17
+* Spring Boot 3
+* Spring Cloud
+* Maven
+
+#### Microservices
+
+* Eureka Discovery Server
+* Spring Cloud Gateway
+* Spring Cloud Config Server
+* Resilience4j
+
+#### AI
+
+* Spring AI *(planned)*
+* OpenAI API *(planned)*
+
+#### Infrastructure
+
+* Redis
+* HashiCorp Vault
+* GitHub
+* HCP Vault Dedicated
 
 ---
 
-## 🧰 Tech Stack
-> Backend: Java 17 ▪ Spring Boot ▪ Spring Cloud (Eureka, API Gateway)
-<!-- Spring Data JPA
-AI / NLP
-Spring AI / OpenAI API (optional)
-Python (optional NLP service)
-Data Source
-YouTube Data API v3
-Database
-MySQL / PostgreSQL
-DevOps
-Docker & Docker Compose
-GitHub Actions (CI/CD)
-Grafana + Loki + Promtail (Monitoring & Logging) -->
+## ⚙️ Requirements, Installation & Running the Project
 
----
+### 📋 Requirements
 
-## ⚙️ Getting Started
-##### Prerequisites
-> Java 17+ ▪ Maven ▪ Docker (optional)
-##### 🔧 Clone Repository
+Before running the project, make sure the following tools and services are installed:
+
+#### Required Software
+
+* Java 17+
+* Maven 3.9+
+* Git
+* IntelliJ IDEA *(recommended)*
+* Redis *(for rate limiting support)*
+
+### ☁️ External Services
+
+The project also requires:
+
+* GitHub account
+* Clone Private configuration repository
+* HashiCorp HCP Vault Dedicated
+* YouTube Data API v3 key
+
+### 🔑 Required Environment Variables
+
+Set the following environment variables before running the services:
+
+```env
+CONFIG_REPO_URI=your_private_config_repo_url
+CONFIG_REPO_USERNAME=your_github_username
+CONFIG_REPO_TOKEN=your_github_token
+
+VAULT_HOST=your_vault_host
+VAULT_TOKEN=your_vault_token
+
+YOUTUBE_API_KEY=your_youtube_api_key
 ```
-git clone https://github.com/your-username/comment-insight.git
-cd comment-insight
+
+### 📥 Installation
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/comment-insight-parent.git
 ```
-##### ▶️ Run Locally
+
+#### 2. Navigate to Project Directory
+
+```bash
+cd comment-insight-parent
 ```
+
+#### 3. Build the Project
+
+```bash
 mvn clean install
+```
+
+This will:
+
+* Build all microservices
+* Install shared modules
+* Resolve dependencies
+
+### ⚙️ Running the Project
+
+#### Recommended Startup Order
+
+Start the services in the following order:
+
+```text
+1. Config Server
+2. Discovery Service
+3. API Gateway
+4. Connector Service
+5. YouTube Connector Service
+6. Sentiment Service
+```
+
+##### ▶️ Start Config Server
+
+```bash
+cd config-server
 mvn spring-boot:run
 ```
-##### 🐳 Run with Docker
+
+##### ▶️ Start Discovery Service
+
+```bash
+cd discovery-service
+mvn spring-boot:run
 ```
-docker-compose up --build
+
+##### ▶️ Start API Gateway
+
+```bash
+cd api-gateway-service
+mvn spring-boot:run
 ```
-##### 📡 API Example
-###### Analyze YouTube Comments
+
+##### ▶️ Start Connector Service
+
+```bash
+cd connector-service
+mvn spring-boot:run
 ```
-POST /api/analyze
+
+##### ▶️ Start YouTube Connector Service
+
+```bash
+cd youtube-connector-service
+mvn spring-boot:run
 ```
-###### Request Body
+
+##### ▶️ Start Sentiment Service
+
+```bash
+cd sentiment-service
+mvn spring-boot:run
 ```
+
+### 🧪 Verify Services
+
+#### Eureka Dashboard
+
+```text
+http://localhost:8761
+```
+
+#### Config Server
+
+```text
+http://localhost:8888
+```
+
+#### API Gateway Health Check
+
+```text
+http://localhost:8080/actuator/health
+```
+
+### 📂 Example API Request
+
+#### Fetch Paginated YouTube Comments
+
+##### Endpoint
+
+```http
+POST /api/connectors/v1/comments/page
+```
+
+##### Request Body
+
+```json
 {
-  "videoUrl": "https://www.youtube.com/watch?v=example"
+  "source": "YOUTUBE",
+  "url": "https://www.youtube.com/watch?v=example",
+  "pageSize": 20
 }
 ```
-###### 🧪 Example Output
-```
-{
-  "positive": 65,
-  "negative": 20,
-  "neutral": 15,
-  "conclusion": "Most viewers appreciated the content quality, while some expressed concerns about audio clarity and pacing."
-}
-```
+
+### 🛠️ Development Notes
+
+* Configuration files are managed centrally using Spring Cloud Config Server
+* Sensitive values are securely managed using HashiCorp Vault
+* Shared DTOs and exceptions are located in `comment-insight-common`
+* Pagination is designed as reusable platform-independent architecture
+* The system is designed for future multi-platform support
 
 ---
 
-## 🔮 Future Enhancements
+## 🎯 Product Features & Roadmap
+### ⚙️ Core Features
+#### ✅ YouTube Comment Integration
+* Fetch total comments
+* Fetch paginated comments
+* Fetch recent comments
+* Support page tokens
+* Convert YouTube responses into unified models
 
-> 🌍 **Multi-platform Support** — Reddit, Amazon, blogs, forums  
-> 🧩 **Plugin System** — Connector-based architecture  
-> 🔍 **AI Analysis** — Aspect-based sentiment (price, quality, delivery)  
-> 📊 **Analytics** — Advanced dashboard  
-> 🤖 **AI Model** — Custom training  
-> ☁️ **Deployment** — AWS / Kubernetes
+#### ✅ AI-Powered Sentiment Analysis
 
+The AI sentiment-service analyzes comments and returns:
+
+* Positive Summary + Count
+
+* Negative Summary + Count
+
+* Neutral Summary + Count
+
+* AI-Generated Overall Summary
+
+* AI Recommendation
+
+* AI Video Content Understanding
+
+### 📈 Future Roadmap
+
+#### Planned Platform Integrations
+
+* Reddit
+* Amazon Reviews
+* TikTok
+* Twitter/X
+* Blog comments
+
+#### Planned AI Features
+
+* Topic extraction
+* Emotion analysis
+* Trend detection
+* Toxicity detection
+* Spam detection
+* Multi-language support
+* AI-generated reports
+* AI agents for autonomous analysis
+
+---
+
+## 📌 Project Status
+
+🚧 **Active Development**
+
+CommentInsight is currently under active development.
+
+The platform already supports:
+
+* YouTube comment integration
+* Pagination support
+* Centralized configuration management
+<!--* Secure secret management with Vault -->
+* API Gateway routing
+* Service discovery
+* Resilience patterns
+
+Current development focus includes:
+
+* AI-powered sentiment analysis
+* Audience insight generation
+* Multi-platform integrations
+* AI-generated recommendation summaries
+* Advanced analytics features
+
+Planned future integrations include Reddit, Amazon Reviews, TikTok, and additional AI-powered analysis capabilities.
 
 ---
 
