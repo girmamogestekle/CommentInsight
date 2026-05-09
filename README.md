@@ -22,40 +22,96 @@ Built with Spring Boot microservices architecture, centralized configuration man
 
 ---
 
-## 🎯 Key Features
-##### 📥 Automatic Comment Extraction
-> Fetch comments directly from YouTube using API
-<!-- ##### 🔍 Sentiment Analysis
-Classify comments as Positive, Negative, or Neutral
-##### 🧠 AI-Powered Insight Generation
-Generate natural language summaries from user comments
-##### 🔗 RESTful APIs
-Analyze comments by simply providing a video URL
-##### 🏗️ Microservices Architecture
-Modular and scalable system design
-##### 🔄 Extensible Platform
-Easily add support for other platforms (Reddit, Amazon, blogs, etc.) -->
+## 🎯 Product Features & Roadmap
+### ⚙️ Core Features
+#### ✅ YouTube Comment Integration
+* Fetch total comments
+* Fetch paginated comments
+* Fetch recent comments
+* Support page tokens
+* Convert YouTube responses into unified models
+
+#### ✅ AI-Powered Sentiment Analysis
+
+The AI sentiment-service analyzes comments and returns:
+
+* Positive Summary + Count
+
+* Negative Summary + Count
+
+* Neutral Summary + Count
+
+* AI-Generated Overall Summary
+
+* AI Recommendation
+
+* AI Video Content Understanding
+
+### 📈 Future Roadmap
+
+#### Planned Platform Integrations
+
+* Reddit
+* Amazon Reviews
+* TikTok
+* Twitter/X
+* Blog comments
+
+#### Planned AI Features
+
+* Topic extraction
+* Emotion analysis
+* Trend detection
+* Toxicity detection
+* Spam detection
+* Multi-language support
+* AI-generated reports
+* AI agents for autonomous analysis
 
 ---
 
-## 🏛️ Architecture
-```
-User Input (YouTube URL)
+## 🏗️ Architecture & Design Principles
+
+### System Architecture
+
+```text
+Client (Postman / Frontend)
         ↓
-+---------------------------+
-|   API Gateway             |
-+-------------+-------------+
+API Gateway
+        ↓
+Connector Service
+        ↓
+Platform Connector Services
+        ↓
+External APIs
+        ↓
+AI Sentiment Service
 ```
 
----
+### 🧩 Microservices Structure
 
-## 🔄 System Flow
-1. User provides YouTube video URL
-2. System fetches comments via API
-<!-- 3. Comments are cleaned and processed
-4. Sentiment analysis is applied
-5. AI generates a final conclusion
-6. Results are returned via API or UI  -->
+```text
+comment-insight-parent
+├── comment-insight-common
+├── config-server
+├── discovery-service
+├── api-gateway-service
+├── connector-service
+├── youtube-connector-service
+└── sentiment-service
+```
+
+### 🏆 Architecture Principles
+
+* Microservices architecture
+* Separation of concerns
+* Shared DTO design
+* Platform abstraction
+* Externalized configuration
+* Secure secret management
+* Environment isolation
+* Scalable pagination
+* AI extensibility
 
 ---
 
@@ -144,43 +200,174 @@ Implemented resilience features include:
 
 ---
 
-## ⚙️ Getting Started
-##### Prerequisites
-> Java 17+ ▪ Maven ▪ Docker (optional)
-##### 🔧 Clone Repository
+## ⚙️ Requirements, Installation & Running the Project
+
+### 📋 Requirements
+
+Before running the project, make sure the following tools and services are installed:
+
+#### Required Software
+
+* Java 17+
+* Maven 3.9+
+* Git
+* IntelliJ IDEA *(recommended)*
+* Redis *(for rate limiting support)*
+
+### ☁️ External Services
+
+The project also requires:
+
+* GitHub account
+* Private configuration repository
+* HashiCorp HCP Vault Dedicated
+* YouTube Data API v3 key
+
+### 🔑 Required Environment Variables
+
+Set the following environment variables before running the services:
+
+```env
+CONFIG_REPO_URI=your_private_config_repo_url
+CONFIG_REPO_USERNAME=your_github_username
+CONFIG_REPO_TOKEN=your_github_token
+
+VAULT_HOST=your_vault_host
+VAULT_TOKEN=your_vault_token
+
+YOUTUBE_API_KEY=your_youtube_api_key
 ```
-git clone https://github.com/your-username/comment-insight.git
-cd comment-insight
+
+## 📥 Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/comment-insight-parent.git
 ```
-##### ▶️ Run Locally
+
+### 2. Navigate to Project Directory
+
+```bash
+cd comment-insight-parent
 ```
+
+### 3. Build the Project
+
+```bash
 mvn clean install
+```
+
+This will:
+
+* Build all microservices
+* Install shared modules
+* Resolve dependencies
+
+## ⚙️ Running the Project
+
+### Recommended Startup Order
+
+Start the services in the following order:
+
+```text
+1. Config Server
+2. Discovery Service
+3. API Gateway
+4. Connector Service
+5. YouTube Connector Service
+6. Sentiment Service
+```
+
+#### ▶️ Start Config Server
+
+```bash
+cd config-server
 mvn spring-boot:run
 ```
-##### 🐳 Run with Docker
+
+#### ▶️ Start Discovery Service
+
+```bash
+cd discovery-service
+mvn spring-boot:run
 ```
-docker-compose up --build
+
+#### ▶️ Start API Gateway
+
+```bash
+cd api-gateway-service
+mvn spring-boot:run
 ```
-##### 📡 API Example
-###### Analyze YouTube Comments
+
+#### ▶️ Start Connector Service
+
+```bash
+cd connector-service
+mvn spring-boot:run
 ```
-POST /api/analyze
+
+#### ▶️ Start YouTube Connector Service
+
+```bash
+cd youtube-connector-service
+mvn spring-boot:run
 ```
-###### Request Body
+
+#### ▶️ Start Sentiment Service
+
+```bash
+cd sentiment-service
+mvn spring-boot:run
 ```
+
+### 🧪 Verify Services
+
+#### Eureka Dashboard
+
+```text
+http://localhost:8761
+```
+
+#### Config Server
+
+```text
+http://localhost:8888
+```
+
+#### API Gateway Health Check
+
+```text
+http://localhost:8080/actuator/health
+```
+
+## 📂 Example API Request
+
+### Fetch Paginated YouTube Comments
+
+#### Endpoint
+
+```http
+POST /api/connectors/v1/comments/page
+```
+
+#### Request Body
+
+```json
 {
-  "videoUrl": "https://www.youtube.com/watch?v=example"
+  "source": "YOUTUBE",
+  "url": "https://www.youtube.com/watch?v=example",
+  "pageSize": 20
 }
 ```
-###### 🧪 Example Output
-```
-{
-  "positive": 65,
-  "negative": 20,
-  "neutral": 15,
-  "conclusion": "Most viewers appreciated the content quality, while some expressed concerns about audio clarity and pacing."
-}
-```
+
+## 🛠️ Development Notes
+
+* Configuration files are managed centrally using Spring Cloud Config Server
+* Sensitive values are securely managed using HashiCorp Vault
+* Shared DTOs and exceptions are located in `comment-insight-common`
+* Pagination is designed as reusable platform-independent architecture
+* The system is designed for future multi-platform support
 
 ---
 
