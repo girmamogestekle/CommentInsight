@@ -1,23 +1,24 @@
-# 📊 CommentInsight: AI-Powered Comment Intelligence Platform
-
 [![Java](https://img.shields.io/badge/Java-17-blue)](https://openjdk.org/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen)](https://spring.io/projects/spring-boot)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)](https://spring.io/projects/spring-ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
 <!-- [![Swagger UI](https://img.shields.io/badge/Docs-Swagger_UI-blue)](https://girmamogestekle.github.io/Post-Comments-App/)
 [![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/workflow.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=postEntity-comments-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=postEntity-comments-app)
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/postEntity-comments-app) -->
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
 
+# 🚀 CommentInsight 
+AI-Powered Comment Intelligence & Sentiment Analysis Platform
+```
+Scalable microservices platform for collecting, analyzing, and summarizing comments from social media platforms and websites using AI.
+```
 ---
 
 ## 🚀 Overview
-CommentInsight is an AI-powered platform that collects and analyzes comments from online platforms to extract meaningful insights.
+CommentInsight is an AI-powered microservices platform designed to collect, analyze, and summarize user comments from several platforms and websites. The system fetches comments from platforms such as YouTube and uses AI-driven sentiment analysis to generate audience insights including positive, negative, and neutral summaries, content recommendations, and overall audience reactions.
 
-The system currently supports YouTube comment analysis, where it automatically fetches comments from a given video URL and classifies them into positive, negative, or neutral. It then generates a human-readable conclusion summarizing public opinion.
-
-The platform is designed with a scalable microservices architecture, enabling future support for social media, e-commerce platforms, blogs, and other websites with comment sections.
+Built with Spring Boot microservices architecture, centralized configuration management, API Gateway routing, service discovery, resilience patterns, and secure cloud-based secret management, the platform is designed to be scalable, extensible, and ready for future AI-powered analytics across multiple platforms including Reddit, Amazon Reviews, TikTok, and more.
 
 ---
 
