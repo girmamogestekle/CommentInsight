@@ -22,54 +22,6 @@ Built with Spring Boot microservices architecture, centralized configuration man
 
 ---
 
-## 🎯 Product Features & Roadmap
-### ⚙️ Core Features
-#### ✅ YouTube Comment Integration
-* Fetch total comments
-* Fetch paginated comments
-* Fetch recent comments
-* Support page tokens
-* Convert YouTube responses into unified models
-
-#### ✅ AI-Powered Sentiment Analysis
-
-The AI sentiment-service analyzes comments and returns:
-
-* Positive Summary + Count
-
-* Negative Summary + Count
-
-* Neutral Summary + Count
-
-* AI-Generated Overall Summary
-
-* AI Recommendation
-
-* AI Video Content Understanding
-
-### 📈 Future Roadmap
-
-#### Planned Platform Integrations
-
-* Reddit
-* Amazon Reviews
-* TikTok
-* Twitter/X
-* Blog comments
-
-#### Planned AI Features
-
-* Topic extraction
-* Emotion analysis
-* Trend detection
-* Toxicity detection
-* Spam detection
-* Multi-language support
-* AI-generated reports
-* AI agents for autonomous analysis
-
----
-
 ## 🏗️ Architecture & Design Principles
 
 ### System Architecture
@@ -219,7 +171,7 @@ Before running the project, make sure the following tools and services are insta
 The project also requires:
 
 * GitHub account
-* Private configuration repository
+* Clone Private configuration repository
 * HashiCorp HCP Vault Dedicated
 * YouTube Data API v3 key
 
@@ -238,21 +190,21 @@ VAULT_TOKEN=your_vault_token
 YOUTUBE_API_KEY=your_youtube_api_key
 ```
 
-## 📥 Installation
+### 📥 Installation
 
-### 1. Clone the Repository
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/your-username/comment-insight-parent.git
 ```
 
-### 2. Navigate to Project Directory
+#### 2. Navigate to Project Directory
 
 ```bash
 cd comment-insight-parent
 ```
 
-### 3. Build the Project
+#### 3. Build the Project
 
 ```bash
 mvn clean install
@@ -264,9 +216,9 @@ This will:
 * Install shared modules
 * Resolve dependencies
 
-## ⚙️ Running the Project
+### ⚙️ Running the Project
 
-### Recommended Startup Order
+#### Recommended Startup Order
 
 Start the services in the following order:
 
@@ -279,42 +231,42 @@ Start the services in the following order:
 6. Sentiment Service
 ```
 
-#### ▶️ Start Config Server
+##### ▶️ Start Config Server
 
 ```bash
 cd config-server
 mvn spring-boot:run
 ```
 
-#### ▶️ Start Discovery Service
+##### ▶️ Start Discovery Service
 
 ```bash
 cd discovery-service
 mvn spring-boot:run
 ```
 
-#### ▶️ Start API Gateway
+##### ▶️ Start API Gateway
 
 ```bash
 cd api-gateway-service
 mvn spring-boot:run
 ```
 
-#### ▶️ Start Connector Service
+##### ▶️ Start Connector Service
 
 ```bash
 cd connector-service
 mvn spring-boot:run
 ```
 
-#### ▶️ Start YouTube Connector Service
+##### ▶️ Start YouTube Connector Service
 
 ```bash
 cd youtube-connector-service
 mvn spring-boot:run
 ```
 
-#### ▶️ Start Sentiment Service
+##### ▶️ Start Sentiment Service
 
 ```bash
 cd sentiment-service
@@ -341,17 +293,17 @@ http://localhost:8888
 http://localhost:8080/actuator/health
 ```
 
-## 📂 Example API Request
+### 📂 Example API Request
 
-### Fetch Paginated YouTube Comments
+#### Fetch Paginated YouTube Comments
 
-#### Endpoint
+##### Endpoint
 
 ```http
 POST /api/connectors/v1/comments/page
 ```
 
-#### Request Body
+##### Request Body
 
 ```json
 {
@@ -361,7 +313,7 @@ POST /api/connectors/v1/comments/page
 }
 ```
 
-## 🛠️ Development Notes
+### 🛠️ Development Notes
 
 * Configuration files are managed centrally using Spring Cloud Config Server
 * Sensitive values are securely managed using HashiCorp Vault
@@ -371,15 +323,79 @@ POST /api/connectors/v1/comments/page
 
 ---
 
-## 🔮 Future Enhancements
+## 🎯 Product Features & Roadmap
+### ⚙️ Core Features
+#### ✅ YouTube Comment Integration
+* Fetch total comments
+* Fetch paginated comments
+* Fetch recent comments
+* Support page tokens
+* Convert YouTube responses into unified models
 
-> 🌍 **Multi-platform Support** — Reddit, Amazon, blogs, forums  
-> 🧩 **Plugin System** — Connector-based architecture  
-> 🔍 **AI Analysis** — Aspect-based sentiment (price, quality, delivery)  
-> 📊 **Analytics** — Advanced dashboard  
-> 🤖 **AI Model** — Custom training  
-> ☁️ **Deployment** — AWS / Kubernetes
+#### ✅ AI-Powered Sentiment Analysis
 
+The AI sentiment-service analyzes comments and returns:
+
+* Positive Summary + Count
+
+* Negative Summary + Count
+
+* Neutral Summary + Count
+
+* AI-Generated Overall Summary
+
+* AI Recommendation
+
+* AI Video Content Understanding
+
+### 📈 Future Roadmap
+
+#### Planned Platform Integrations
+
+* Reddit
+* Amazon Reviews
+* TikTok
+* Twitter/X
+* Blog comments
+
+#### Planned AI Features
+
+* Topic extraction
+* Emotion analysis
+* Trend detection
+* Toxicity detection
+* Spam detection
+* Multi-language support
+* AI-generated reports
+* AI agents for autonomous analysis
+
+---
+
+## 📌 Project Status
+
+🚧 **Active Development**
+
+CommentInsight is currently under active development.
+
+The platform already supports:
+
+* YouTube comment integration
+* Pagination support
+* Centralized configuration management
+<!--* Secure secret management with Vault -->
+* API Gateway routing
+* Service discovery
+* Resilience patterns
+
+Current development focus includes:
+
+* AI-powered sentiment analysis
+* Audience insight generation
+* Multi-platform integrations
+* AI-generated recommendation summaries
+* Advanced analytics features
+
+Planned future integrations include Reddit, Amazon Reviews, TikTok, and additional AI-powered analysis capabilities.
 
 ---
 
