@@ -1,10 +1,9 @@
 package com.comment.insight.youtube.connector.service;
 
-import com.comment.insight.common.dto.PageRequestDto;
-import com.comment.insight.common.dto.PlatformCommentDto;
-import com.comment.insight.common.dto.PlatformCommentPageResponse;
+import com.comment.insight.common.dto.*;
 import com.comment.insight.common.enums.SourceType;
 import com.comment.insight.common.exception.InvalidUrlException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -16,17 +15,48 @@ import java.util.Map;
 @Service
 public class YoutubeCommentService {
 
-    private final RestClient restClient;
+    private static final int YOUTUBE_MAX_PAGE_SIZE = 100;
+    private final RestClient youtubeRestClient;
     private final String youtubeApiKey;
+    private final RestClient loadBalancedRestClient;
 
     public YoutubeCommentService(RestClient.Builder restClientBuilder,
+                                 @Qualifier("loadBalancedRestClientBuilder") RestClient.Builder loadBalancedRestClientBuilder,
                                  @Value("${youtube.api.base-url}") String youtubeApiBaseUrl,
                                  @Value("${youtube.api.key}") String youtubeApiKey) {
-        this.restClient = restClientBuilder
+        this.youtubeRestClient = restClientBuilder
                 .baseUrl(youtubeApiBaseUrl)
                 .build();
 
+        this.loadBalancedRestClient = loadBalancedRestClientBuilder.build();
         this.youtubeApiKey = youtubeApiKey;
+    }
+
+    public SentimentAnalyzeResponse analyzeYoutubeComments(
+            String videoUrl,
+            int requestedComments
+    ) {
+        String videoId = extractVideoId(videoUrl);
+
+        int safeRequestedComments = Math.max(requestedComments, 1);
+
+        List<PlatformCommentDto> comments = fetchRequestedComments(
+                videoId,
+                safeRequestedComments
+        );
+
+        CommentAnalyzeRequest analyzeRequest = new CommentAnalyzeRequest(
+                SourceType.YOUTUBE.name(),
+                videoId,
+                videoUrl,
+                comments
+        );
+
+        return loadBalancedRestClient.post()
+                .uri("http://sentiment-service/api/sentiment/v1/analyze")
+                .body(analyzeRequest)
+                .retrieve()
+                .body(SentimentAnalyzeResponse.class);
     }
 
     public PlatformCommentPageResponse fetchCommentsPage(PageRequestDto request) {
@@ -39,7 +69,7 @@ public class YoutubeCommentService {
         int totalComments = getTotalCommentCount(videoId);
 
         int finalPageSize = pageSize;
-        Map response = restClient.get()
+        Map response = youtubeRestClient.get()
                 .uri(uriBuilder -> {
                     var builder = uriBuilder
                             .path("/commentThreads")
@@ -58,7 +88,7 @@ public class YoutubeCommentService {
                 .retrieve()
                 .body(Map.class);
 
-        List<PlatformCommentDto> comments = parsePlatformComments(response);
+        List<PlatformCommentDto> comments = parseYouTubeComments(response);
 
         String nextPageToken = response == null ? null : (String) response.get("nextPageToken");
 
@@ -72,8 +102,86 @@ public class YoutubeCommentService {
         );
     }
 
+    private List<PlatformCommentDto> fetchRequestedComments(
+            String videoId,
+            int requestedComments
+    ) {
+        List<PlatformCommentDto> allComments = new ArrayList<>();
+
+        String nextPageToken = null;
+
+        while (allComments.size() < requestedComments) {
+            int remaining = requestedComments - allComments.size();
+            int pageSize = Math.min(remaining, YOUTUBE_MAX_PAGE_SIZE);
+
+            PlatformCommentPageResponse pageResponse = fetchCommentsPageByVideoId(
+                    videoId,
+                    pageSize,
+                    nextPageToken
+            );
+
+            if (pageResponse.getComments() == null || pageResponse.getComments().isEmpty()) {
+                break;
+            }
+
+            allComments.addAll(pageResponse.getComments());
+            nextPageToken = pageResponse.getNextPageToken();
+
+            if (nextPageToken == null || nextPageToken.isBlank()) {
+                break;
+            }
+        }
+
+        if (allComments.size() > requestedComments) {
+            return allComments.subList(0, requestedComments);
+        }
+
+        return allComments;
+    }
+
+    public PlatformCommentPageResponse fetchCommentsPageByVideoId(
+            String videoId,
+            int pageSize,
+            String pageToken
+    ) {
+        int safePageSize = Math.min(Math.max(pageSize, 1), YOUTUBE_MAX_PAGE_SIZE);
+        int totalComments = getTotalCommentCount(videoId);
+
+        Map response = youtubeRestClient.get()
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder
+                            .path("/commentThreads")
+                            .queryParam("part", "snippet")
+                            .queryParam("videoId", videoId)
+                            .queryParam("maxResults", safePageSize)
+                            .queryParam("order", "time")
+                            .queryParam("textFormat", "plainText")
+                            .queryParam("key", youtubeApiKey);
+
+                    if (pageToken != null && !pageToken.isBlank()) {
+                        builder.queryParam("pageToken", pageToken);
+                    }
+
+                    return builder.build();
+                })
+                .retrieve()
+                .body(Map.class);
+
+        List<PlatformCommentDto> comments = parseYouTubeComments(response);
+        String nextPageToken = response == null ? null : (String) response.get("nextPageToken");
+
+        return new PlatformCommentPageResponse(
+                SourceType.YOUTUBE.name(),
+                videoId,
+                "https://www.youtube.com/watch?v=" + videoId,
+                totalComments,
+                nextPageToken,
+                comments
+        );
+    }
+
     private int getTotalCommentCount(String videoId) {
-        Map response = restClient.get()
+        Map response = youtubeRestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/videos")
                         .queryParam("part", "statistics")
@@ -110,7 +218,7 @@ public class YoutubeCommentService {
         throw new InvalidUrlException("Invalid YouTube video URL");
     }
 
-    private List<PlatformCommentDto> parsePlatformComments(Map response) {
+    private List<PlatformCommentDto> parseYouTubeComments(Map response) {
 
         List<PlatformCommentDto> comments = new ArrayList<>();
 
