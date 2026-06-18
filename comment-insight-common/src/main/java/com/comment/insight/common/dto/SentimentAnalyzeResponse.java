@@ -97,4 +97,20 @@ public class SentimentAnalyzeResponse {
     public void setVideoContentSummary(String videoContentSummary) {
         this.videoContentSummary = videoContentSummary;
     }
+
+    @Override
+    public String toString() {
+        return "SentimentAnalyzeResponse{" +
+                "source='" + source + '\'' +
+                ", sourceId='" + sourceId + '\'' +
+                ", sourceUrl='" + sourceUrl + '\'' +
+                ", analyzedComments=" + analyzedComments +
+                ", positive=" + positive +
+                ", negative=" + negative +
+                ", neutral=" + neutral +
+                ", overallSummary='" + overallSummary + '\'' +
+                ", recommendation='" + recommendation + '\'' +
+                ", videoContentSummary='" + videoContentSummary + '\'' +
+                '}';
+    }
 }

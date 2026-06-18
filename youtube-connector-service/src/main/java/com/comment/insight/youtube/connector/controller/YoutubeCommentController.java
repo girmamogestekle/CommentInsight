@@ -30,10 +30,7 @@ public class YoutubeCommentController {
 
     @PostMapping("/analyze")
     public SentimentAnalyzeResponse analyzeYoutubeComments(@Valid @RequestBody AnalyzeCommentsRequest request) {
-        SentimentAnalyzeResponse response = youtubeCommentService.analyzeYoutubeComments(request.getVideoUrl(), request.getComments());
-
-        System.out.println(response.getVideoContentSummary());
-        return response;
+        return youtubeCommentService.analyzeYoutubeComments(request.getVideoUrl(), request.getComments());
     }
 
 }

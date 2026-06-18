@@ -4,18 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 
 public class CommentFetchPageRequest {
 
-    @NotBlank(message = "source is required")
-    private String source;
-
     @NotBlank(message = "url is required")
     private String url;
 
     private Integer pageSize;
     private String pageToken;
-
-    public String getSource() {
-        return source;
-    }
 
     public String getUrl() {
         return url;
@@ -27,10 +20,6 @@ public class CommentFetchPageRequest {
 
     public String getPageToken() {
         return pageToken;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 
     public void setUrl(String url) {
