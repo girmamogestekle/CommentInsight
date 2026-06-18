@@ -1,0 +1,71 @@
+--- a/api-gateway-service/api-gateway-service-dev.properties
++++ b/api-gateway-service/api-gateway-service-dev.properties
+@@ -14,6 +14,17 @@
+ 
+ 
+ # ===============================
++# Gateway & Circuit Breaker Timeouts
++# ===============================
++# /analyze can take several seconds (YouTube API + sentiment LLM).
++spring.cloud.gateway.httpclient.response-timeout=120s
++resilience4j.timelimiter.configs.default.timeoutDuration=120s
++resilience4j.timelimiter.instances.connectorCircuitBreaker.timeoutDuration=120s
++resilience4j.timelimiter.instances.youtubeCircuitBreaker.timeoutDuration=120s
++resilience4j.timelimiter.instances.sentimentCircuitBreaker.timeoutDuration=120s
++
++
++# ===============================
+ # Spring Cloud Gateway Routes
+ # ===============================
+ 
+@@ -29,7 +40,7 @@
+ # Circuit Breaker + Fallback
+ spring.cloud.gateway.routes[0].filters[0].name=CircuitBreaker
+ spring.cloud.gateway.routes[0].filters[0].args.name=connectorCircuitBreaker
+-spring.cloud.gateway.routes[0].filters[0].args.fallbackUri=forward:/fallback/connector-service
++spring.cloud.gateway.routes[0].filters[0].args.fallbackUri=forward:/api/fallback/connector-service
+ 
+ # Retry
+ spring.cloud.gateway.routes[0].filters[1].name=Retry
+@@ -57,7 +68,7 @@
+ # Circuit Breaker + Fallback
+ spring.cloud.gateway.routes[1].filters[0].name=CircuitBreaker
+ spring.cloud.gateway.routes[1].filters[0].args.name=youtubeCircuitBreaker
+-spring.cloud.gateway.routes[1].filters[0].args.fallbackUri=forward:/fallback/youtube-connector-service
++spring.cloud.gateway.routes[1].filters[0].args.fallbackUri=forward:/api/fallback/youtube-connector-service
+ 
+ # Retry
+ spring.cloud.gateway.routes[1].filters[1].name=Retry
+@@ -83,21 +94,21 @@
+ spring.cloud.gateway.routes[2].predicates[0]=Path=/api/sentiment/**
+ 
+ # Circuit Breaker + Fallback
+-spring.cloud.gateway.routes[1].filters[0].name=CircuitBreaker
+-spring.cloud.gateway.routes[1].filters[0].args.name=sentimentCircuitBreaker
+-spring.cloud.gateway.routes[1].filters[0].args.fallbackUri=forward:/fallback/sentiment-service
++spring.cloud.gateway.routes[2].filters[0].name=CircuitBreaker
++spring.cloud.gateway.routes[2].filters[0].args.name=sentimentCircuitBreaker
++spring.cloud.gateway.routes[2].filters[0].args.fallbackUri=forward:/api/fallback/sentiment-service
+ 
+ # Retry
+-spring.cloud.gateway.routes[1].filters[1].name=Retry
+-spring.cloud.gateway.routes[1].filters[1].args.retries=3
+-spring.cloud.gateway.routes[1].filters[1].args.statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+-spring.cloud.gateway.routes[1].filters[1].args.methods=GET,POST
++spring.cloud.gateway.routes[2].filters[1].name=Retry
++spring.cloud.gateway.routes[2].filters[1].args.retries=3
++spring.cloud.gateway.routes[2].filters[1].args.statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
++spring.cloud.gateway.routes[2].filters[1].args.methods=GET,POST
+ 
+ # Rate Limiting
+-#spring.cloud.gateway.routes[1].filters[2].name=RequestRateLimiter
+-#spring.cloud.gateway.routes[1].filters[2].args.redis-rate-limiter.replenishRate=5
+-#spring.cloud.gateway.routes[1].filters[2].args.redis-rate-limiter.burstCapacity=10
+-#spring.cloud.gateway.routes[1].filters[2].args.key-resolver=#{@userKeyResolver}
++#spring.cloud.gateway.routes[2].filters[2].name=RequestRateLimiter
++#spring.cloud.gateway.routes[2].filters[2].args.redis-rate-limiter.replenishRate=5
++#spring.cloud.gateway.routes[2].filters[2].args.redis-rate-limiter.burstCapacity=10
++#spring.cloud.gateway.routes[2].filters[2].args.key-resolver=#{@userKeyResolver}
+ 
+ 
+ 

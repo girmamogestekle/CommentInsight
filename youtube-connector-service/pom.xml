@@ -50,6 +50,12 @@
         <version>1.0.0</version>
     </dependency>
 
+    <!-- RestClient load balancing with Eureka -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+    </dependency>
+
     <!-- Configure Server -->
     <dependency>
         <groupId>org.springframework.cloud</groupId>
