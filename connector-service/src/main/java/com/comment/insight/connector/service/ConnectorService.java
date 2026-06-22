@@ -63,7 +63,7 @@ public class ConnectorService {
             pageRequest.setPageToken(request.getPageToken());
 
             return restClient.post()
-                    .uri(youtubeConnectorServiceUrl.concat("/v1/comments/page"))
+                    .uri(youtubeConnectorServiceUrl.concat("/api/youtube/v1/comments/page"))
                     .body(pageRequest)
                     .retrieve()
                     .body(PlatformCommentPageResponse.class);
@@ -80,7 +80,7 @@ public class ConnectorService {
     private SentimentAnalyzeResponse analyzeYoutubeComments(AnalyzeCommentsRequest  request) {
         try {
             return restClient.post()
-                    .uri(youtubeConnectorServiceUrl.concat("/v1/analyze"))
+                    .uri(youtubeConnectorServiceUrl.concat("/api/youtube/v1/analyze"))
                     .body(request)
                     .retrieve()
                     .body(SentimentAnalyzeResponse.class);
@@ -102,7 +102,7 @@ public class ConnectorService {
 
         try {
             return restClient.get()
-                    .uri(youtubeConnectorServiceUrl.concat("/v1/health"))
+                    .uri(youtubeConnectorServiceUrl.concat("/api/youtube/v1/health"))
                     .retrieve()
                     .body(String.class);
         } catch (RestClientException ex) {

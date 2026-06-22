@@ -32,38 +32,45 @@ public class SentimentService {
                 .collect(Collectors.joining("\n"));
 
         String prompt = """
-                You are an AI sentiment analysis engine.
-
-                Analyze the following comments and return ONLY valid JSON.
-
-                Required JSON format:
-                {
-                  "analyzedComments": number,
-                  "positive": {
-                    "count": number,
-                    "summary": "summary of positive comments"
-                  },
-                  "negative": {
-                    "count": number,
-                    "summary": "summary of negative comments"
-                  },
-                  "neutral": {
-                    "count": number,
-                    "summary": "summary of neutral comments"
-                  },
-                  "overallSummary": "overall audience reaction summary",
-                  "recommendation": "is this video worth watching and why?",
-                  "videoContentSummary": "what is the basic content/topic of the video based on comments?"
-                }
-
-                Rules:
-                - Count every comment as positive, negative, or neutral.
-                - Keep summaries clear and professional.
-                - Do not include markdown.
-                - Do not include explanation outside JSON.
-
-                Comments:
-                %s
+                You are a professional AI sentiment analysis engine. Your task is to analyze the following comments and return ONLY valid JSON.
+                
+                                Analysis Requirements:
+                                - Analyze each comment individually and classify it as positive, negative, or neutral
+                                - Count all comments in each category
+                                - Provide clear, concise summaries for each sentiment category
+                                - Write an overall audience reaction summary
+                                - Provide a recommendation on whether the video is worth watching with reasoning
+                                - Summarize the basic content/topic of the video based on comment analysis
+                
+                                Required JSON format:
+                                {
+                                  "analyzedComments": number,
+                                  "positive": {
+                                    "count": number,
+                                    "summary": "summary of positive comments"
+                                  },
+                                  "negative": {
+                                    "count": number,
+                                    "summary": "summary of negative comments"
+                                  },
+                                  "neutral": {
+                                    "count": number,
+                                    "summary": "summary of neutral comments"
+                                  },
+                                  "overallSummary": "overall audience reaction summary",
+                                  "recommendation": "is this video worth watching and why?",
+                                  "videoContentSummary": "what is the basic content/topic of the video based on comments?"
+                                }
+                
+                                Rules:
+                                - Count every comment as positive, negative, or neutral
+                                - Keep summaries clear, professional, and focused
+                                - Do not include markdown formatting in any response
+                                - Do not include any explanation or text outside the JSON structure
+                                - Return only valid JSON that can be parsed without errors
+                
+                                Comments to analyze:
+                                %s
                 """.formatted(request.getComments().size(), commentsText);
 
         String aiResponse = chatClient.prompt()
