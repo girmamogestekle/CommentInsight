@@ -2,11 +2,11 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen)](https://spring.io/projects/spring-boot)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)](https://spring.io/projects/spring-ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/girmamogestekle/CommentInsight/docker-publish.yml?branch=develop&label=Docker%20Build)](https://github.com/girmamogestekle/CommentInsight/actions/workflows/docker-publish.yml)
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-commentinsight-blue?logo=docker)](https://hub.docker.com/u/commentinsight)
 <!-- [![Swagger UI](https://img.shields.io/badge/Docs-Swagger_UI-blue)](https://girmamogestekle.github.io/Post-Comments-App/)
-[![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/workflow.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=postEntity-comments-app)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=postEntity-comments-app)
-[![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/postEntity-comments-app) -->
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=postEntity-comments-app) -->
 
 # 🚀 CommentInsight 
 AI-Powered Comment Intelligence & Sentiment Analysis Platform
@@ -396,6 +396,50 @@ Current development focus includes:
 * Advanced analytics features
 
 Planned future integrations include Reddit, Amazon Reviews, TikTok, and additional AI-powered analysis capabilities.
+
+---
+
+## 🐳 Docker & CI/CD
+
+### Running Locally with Docker Compose
+
+```bash
+# Copy the example env and fill in your secrets
+cp .env.example .env
+
+# Build all images and start the stack
+docker compose build && docker compose up
+```
+
+### GitHub Actions — Build & Push to Docker Hub
+
+The workflow at `.github/workflows/docker-publish.yml` automatically builds and pushes all six service images on every push.
+
+| Branch | Tags pushed to Docker Hub |
+|--------|--------------------------|
+| `develop` | `commentinsight/<service>:dev` |
+| `main` / `master` | `commentinsight/<service>:latest`, `commentinsight/<service>:<sha>` |
+| Pull Request | Build only (no push) |
+
+#### Required GitHub Secrets
+
+Go to **Settings → Secrets and variables → Actions** in your GitHub repository and add:
+
+| Secret | Description |
+|--------|-------------|
+| `DOCKER_HUB_USERNAME` | Your Docker Hub username |
+| `DOCKER_HUB_TOKEN` | Docker Hub Access Token (create at hub.docker.com → Account Settings → Security) |
+
+#### Docker Hub Images
+
+| Service | Image |
+|---------|-------|
+| Config Server | `commentinsight/config-server` |
+| Discovery Service | `commentinsight/discovery-service` |
+| API Gateway | `commentinsight/api-gateway-service` |
+| Connector Service | `commentinsight/connector-service` |
+| YouTube Connector | `commentinsight/youtube-connector-service` |
+| Sentiment Service | `commentinsight/sentiment-service` |
 
 ---
 
