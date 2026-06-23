@@ -80,4 +80,4 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           # Cache layers in GitHub Actions cache for faster rebuilds
           cache-from: type=gha,scope=${{ matrix.service }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }} 
