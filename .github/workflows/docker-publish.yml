@@ -9,8 +9,7 @@ on:
       - master
 
 env:
-  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  IMAGE_PREFIX: commentinsight
+  IMAGE_PREFIX: ${{ secrets.DOCKER_HUB_USERNAME }}
 
 jobs:
   build-and-push:
