@@ -3,14 +3,17 @@ name: Build & Push Docker Images
 on:
   push:
     branches:
+      - develop
       - master
+      - main
   pull_request:
     branches:
+      - develop
       - master
+      - main
 
 env:
-  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  IMAGE_PREFIX: commentinsight
+  IMAGE_PREFIX: ${{ secrets.DOCKER_HUB_USERNAME }}
 
 jobs:
   build-and-push:
