@@ -1,0 +1,153 @@
+version: '3.9'
+
+services:
+
+  # ─────────────────────────────────────────
+  # Config Server
+  # Fetches config from the private comment-insight-config Git repo
+  # ─────────────────────────────────────────
+  config-server:
+    image: commentinsight/config-server:dev
+    container_name: config-server
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      SERVER_PORT: 8888
+      CONFIG_REPO_URL: ${CONFIG_REPO_URL}
+      CONFIG_REPO_BRANCH: ${CONFIG_REPO_BRANCH:-main}
+      CONFIG_REPO_USERNAME: ${CONFIG_REPO_USERNAME}
+      CONFIG_REPO_TOKEN: ${CONFIG_REPO_TOKEN}
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - comment-insight-net
+
+  # ─────────────────────────────────────────
+  # Discovery Service (Eureka)
+  # ─────────────────────────────────────────
+  discovery-service:
+    image: commentinsight/discovery-service:dev
+    container_name: discovery-service
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - comment-insight-net
+
+  # ─────────────────────────────────────────
+  # API Gateway
+  # ─────────────────────────────────────────
+  api-gateway-service:
+    image: commentinsight/api-gateway-service:dev
+    container_name: api-gateway-service
+    build:
+      context: .
+      dockerfile: api-gateway-service/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      API_GATEWAY_SERVICE_PORT: 8080
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - comment-insight-net
+
+  # ─────────────────────────────────────────
+  # Connector Service
+  # ─────────────────────────────────────────
+  connector-service:
+    image: commentinsight/connector-service:dev
+    container_name: connector-service
+    build:
+      context: .
+      dockerfile: connector-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      CONNECTOR_SERVICE_PORT: 8081
+      CONNECTOR_YOUTUBE_SERVICE_URL: http://youtube-connector-service:8082
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - comment-insight-net
+
+  # ─────────────────────────────────────────
+  # YouTube Connector Service
+  # ─────────────────────────────────────────
+  youtube-connector-service:
+    image: commentinsight/youtube-connector-service:dev
+    container_name: youtube-connector-service
+    build:
+      context: .
+      dockerfile: youtube-connector-service/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      YOUTUBE_CONNECTOR_SERVICE_PORT: 8082
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY}
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - comment-insight-net
+
+  # ─────────────────────────────────────────
+  # Sentiment Service
+  # ─────────────────────────────────────────
+  sentiment-service:
+    image: commentinsight/sentiment-service:dev
+    container_name: sentiment-service
+    build:
+      context: .
+      dockerfile: sentiment-service/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_SERVER_URL: http://discovery-service:8761/eureka/
+      SENTIMENT_SERVICE_PORT: 8083
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - comment-insight-net
+
+networks:
+  comment-insight-net:
+    driver: bridge
