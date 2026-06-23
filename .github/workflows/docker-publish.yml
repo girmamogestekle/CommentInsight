@@ -3,14 +3,10 @@ name: Build & Push Docker Images
 on:
   push:
     branches:
-      - develop
       - master
-      - main
   pull_request:
     branches:
-      - develop
       - master
-      - main
 
 env:
   IMAGE_PREFIX: ${{ secrets.DOCKER_HUB_USERNAME }}
