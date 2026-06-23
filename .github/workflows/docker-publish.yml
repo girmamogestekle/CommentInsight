@@ -3,12 +3,9 @@ name: Build & Push Docker Images
 on:
   push:
     branches:
-      - develop
-      - main
       - master
   pull_request:
     branches:
-      - main
       - master
 
 env:
