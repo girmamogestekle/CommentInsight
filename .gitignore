@@ -51,6 +51,16 @@ build/
 .env
 
 # =========================
+# Frontend (Next.js)
+# =========================
+frontend/
+
+# =========================
+# Patches
+# =========================
+patches/
+
+# =========================
 # Allow important configs
 # =========================
 !**/application.properties

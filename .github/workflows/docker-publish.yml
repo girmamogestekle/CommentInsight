@@ -7,9 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  # Docker Hub username (e.g. girmamogestekle) — images go to <user>/commentinsight:<tag>
-  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
   IMAGE_NAME: commentinsight
+  DOPPLER_TOKEN: ${{ secrets.COMMENTINSIGHT_DOPPLER_TOKEN }}
 
 jobs:
   build-and-push:
@@ -37,29 +36,39 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: Load secrets from Doppler
+        run: |
+          if [ -z "$DOPPLER_TOKEN" ]; then
+            echo "::error::DOPPLER_TOKEN is missing. Add it under GitHub → Settings → Secrets → Actions."
+            exit 1
+          fi
+          # Inject Doppler secrets into subsequent steps (includes DOCKER_HUB_*)
+          doppler secrets download --no-file --format env >> "$GITHUB_ENV"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ env.DOCKER_HUB_USERNAME }}
+          password: ${{ env.DOCKER_HUB_TOKEN }}
 
       # Single Docker Hub repo: <user>/commentinsight
       # One tag per service, matching docker-compose.yml (e.g. config-server-dev)
       - name: Derive image tags
         id: tags
         run: |
-          IMAGE="${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}"
-          SERVICE="${{ matrix.service }}"
-
-          if [ -z "${{ env.DOCKER_HUB_USERNAME }}" ]; then
-            echo "::error::DOCKER_HUB_USERNAME secret is empty. Add it under Settings → Secrets → Actions."
+          if [ -z "$DOCKER_HUB_USERNAME" ] || [ -z "$DOCKER_HUB_TOKEN" ]; then
+            echo "::error::DOCKER_HUB_USERNAME / DOCKER_HUB_TOKEN missing in Doppler (project commentinsight / config from service token)."
             exit 1
           fi
 
+          IMAGE="${DOCKER_HUB_USERNAME}/${{ env.IMAGE_NAME }}"
+          SERVICE="${{ matrix.service }}"
           echo "tags=${IMAGE}:${SERVICE}-dev" >> "$GITHUB_OUTPUT"
 
       - name: Build and push ${{ matrix.service }}
@@ -67,7 +76,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service }}
