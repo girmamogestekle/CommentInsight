@@ -39,14 +39,30 @@ jobs:
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
 
-      - name: Load secrets from Doppler
+      - name: Load Docker Hub credentials from Doppler
+        id: hub
         run: |
           if [ -z "$DOPPLER_TOKEN" ]; then
-            echo "::error::DOPPLER_TOKEN is missing. Add it under GitHub → Settings → Secrets → Actions."
+            echo "::error::COMMENTINSIGHT_DOPPLER_TOKEN is missing in GitHub Actions secrets."
             exit 1
           fi
-          # Inject Doppler secrets into subsequent steps (includes DOCKER_HUB_*)
-          doppler secrets download --no-file --format env >> "$GITHUB_ENV"
+
+          USERNAME="$(doppler secrets get DOCKER_HUB_USERNAME --plain | tr -d '\r\n')"
+          TOKEN="$(doppler secrets get DOCKER_HUB_TOKEN --plain | tr -d '\r\n')"
+
+          if [ -z "$USERNAME" ] || [ -z "$TOKEN" ]; then
+            echo "::error::DOCKER_HUB_USERNAME or DOCKER_HUB_TOKEN missing/empty in Doppler."
+            exit 1
+          fi
+
+          echo "::add-mask::$USERNAME"
+          echo "::add-mask::$TOKEN"
+          echo "username=$USERNAME" >> "$GITHUB_OUTPUT"
+          {
+            echo "token<<EOF"
+            echo "$TOKEN"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -54,20 +70,13 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_HUB_USERNAME }}
-          password: ${{ env.DOCKER_HUB_TOKEN }}
+          username: ${{ steps.hub.outputs.username }}
+          password: ${{ steps.hub.outputs.token }}
 
-      # Single Docker Hub repo: <user>/commentinsight
-      # One tag per service, matching docker-compose.yml (e.g. config-server-dev)
       - name: Derive image tags
         id: tags
         run: |
-          if [ -z "$DOCKER_HUB_USERNAME" ] || [ -z "$DOCKER_HUB_TOKEN" ]; then
-            echo "::error::DOCKER_HUB_USERNAME / DOCKER_HUB_TOKEN missing in Doppler (project commentinsight / config from service token)."
-            exit 1
-          fi
-
-          IMAGE="${DOCKER_HUB_USERNAME}/${{ env.IMAGE_NAME }}"
+          IMAGE="${{ steps.hub.outputs.username }}/${{ env.IMAGE_NAME }}"
           SERVICE="${{ matrix.service }}"
           echo "tags=${IMAGE}:${SERVICE}-dev" >> "$GITHUB_OUTPUT"
 
