@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
 
 env:
@@ -51,27 +48,19 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       # Single Docker Hub repo: <user>/commentinsight
-      # Tags match docker-compose.yml, e.g. config-server-dev
+      # One tag per service, matching docker-compose.yml (e.g. config-server-dev)
       - name: Derive image tags
         id: tags
         run: |
           IMAGE="${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}"
           SERVICE="${{ matrix.service }}"
-          SHA="${GITHUB_SHA::7}"
-          REF="${GITHUB_REF_NAME}"
 
           if [ -z "${{ env.DOCKER_HUB_USERNAME }}" ]; then
             echo "::error::DOCKER_HUB_USERNAME secret is empty. Add it under Settings → Secrets → Actions."
             exit 1
           fi
 
-          if [ "$REF" = "master" ] || [ "$REF" = "main" ]; then
-            # Matches docker-compose.yml (*-dev) plus latest and immutable sha tags
-            echo "tags=${IMAGE}:${SERVICE}-dev,${IMAGE}:${SERVICE}-latest,${IMAGE}:${SERVICE}-${SHA}" >> "$GITHUB_OUTPUT"
-          else
-            # PRs — build only, no push
-            echo "tags=${IMAGE}:${SERVICE}-pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "tags=${IMAGE}:${SERVICE}-dev" >> "$GITHUB_OUTPUT"
 
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v5
