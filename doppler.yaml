@@ -1,0 +1,3 @@
+setup:
+  project: commentinsight
+  config: dev

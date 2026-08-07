@@ -9,18 +9,18 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/fallback")
 public class FallbackController {
 
-    @GetMapping("/connector-service")
+    @RequestMapping("/connector-service")
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Mono<ErrorResponse> connectorServiceFallback() {
         return Mono.just(new ErrorResponse(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 "Service Unavailable",
                 "Connector Service is temporarily unavailable. Please try again later.",
-                "/api/connectors"
+                "/api/connector"
         ));
     }
 
-    @GetMapping("/youtube-connector-service")
+    @RequestMapping("/youtube-connector-service")
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Mono<ErrorResponse> youtubeConnectorServiceFallback() {
         return Mono.just(new ErrorResponse(
@@ -28,6 +28,17 @@ public class FallbackController {
                 "Service Unavailable",
                 "YouTube Connector Service is temporarily unavailable. Please try again later.",
                 "/api/youtube"
+        ));
+    }
+
+    @RequestMapping("/sentiment-service")
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public Mono<ErrorResponse> sentimentServiceFallback() {
+        return Mono.just(new ErrorResponse(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Service Unavailable",
+                "Sentiment Service is temporarily unavailable. Please try again later.",
+                "/api/sentiment"
         ));
     }
 }

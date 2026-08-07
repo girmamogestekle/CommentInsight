@@ -1,20 +1,22 @@
 package com.comment.insight.common.dto;
 
-public class PlatformCommentResponse {
+import java.util.List;
+
+public class CommentAnalyzeRequest {
 
     private String source;
     private String sourceId;
     private String sourceUrl;
-    private int totalComments;
+    private List<PlatformCommentDto> comments;
 
-    public PlatformCommentResponse() {
+    public CommentAnalyzeRequest() {
     }
 
-    public PlatformCommentResponse(String source, String sourceId, String sourceUrl, int totalComments) {
+    public CommentAnalyzeRequest(String source, String sourceId, String sourceUrl, List<PlatformCommentDto> comments) {
         this.source = source;
         this.sourceId = sourceId;
         this.sourceUrl = sourceUrl;
-        this.totalComments = totalComments;
+        this.comments = comments;
     }
 
     public String getSource() {
@@ -29,8 +31,8 @@ public class PlatformCommentResponse {
         return sourceUrl;
     }
 
-    public int getTotalComments() {
-        return totalComments;
+    public List<PlatformCommentDto> getComments() {
+        return comments;
     }
 
     public void setSource(String source) {
@@ -45,7 +47,7 @@ public class PlatformCommentResponse {
         this.sourceUrl = sourceUrl;
     }
 
-    public void setTotalComments(int totalComments) {
-        this.totalComments = totalComments;
+    public void setComments(List<PlatformCommentDto> comments) {
+        this.comments = comments;
     }
 }
