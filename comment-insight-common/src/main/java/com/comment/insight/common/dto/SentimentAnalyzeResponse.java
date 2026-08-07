@@ -6,14 +6,7 @@ public class SentimentAnalyzeResponse {
     private String sourceId;
     private String sourceUrl;
     private int analyzedComments;
-
-    private SentimentSummary positive;
-    private SentimentSummary negative;
-    private SentimentSummary neutral;
-
-    private String overallSummary;
-    private String recommendation;
-    private String videoContentSummary;
+    private CategoryBreakdown categories;
 
     public SentimentAnalyzeResponse() {
     }
@@ -22,80 +15,40 @@ public class SentimentAnalyzeResponse {
         return source;
     }
 
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public int getAnalyzedComments() {
-        return analyzedComments;
-    }
-
-    public SentimentSummary getPositive() {
-        return positive;
-    }
-
-    public SentimentSummary getNegative() {
-        return negative;
-    }
-
-    public SentimentSummary getNeutral() {
-        return neutral;
-    }
-
-    public String getOverallSummary() {
-        return overallSummary;
-    }
-
-    public String getRecommendation() {
-        return recommendation;
-    }
-
-    public String getVideoContentSummary() {
-        return videoContentSummary;
-    }
-
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getSourceId() {
+        return sourceId;
     }
 
     public void setSourceId(String sourceId) {
         this.sourceId = sourceId;
     }
 
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
     public void setSourceUrl(String sourceUrl) {
         this.sourceUrl = sourceUrl;
+    }
+
+    public int getAnalyzedComments() {
+        return analyzedComments;
     }
 
     public void setAnalyzedComments(int analyzedComments) {
         this.analyzedComments = analyzedComments;
     }
 
-    public void setPositive(SentimentSummary positive) {
-        this.positive = positive;
+    public CategoryBreakdown getCategories() {
+        return categories;
     }
 
-    public void setNegative(SentimentSummary negative) {
-        this.negative = negative;
-    }
-
-    public void setNeutral(SentimentSummary neutral) {
-        this.neutral = neutral;
-    }
-
-    public void setOverallSummary(String overallSummary) {
-        this.overallSummary = overallSummary;
-    }
-
-    public void setRecommendation(String recommendation) {
-        this.recommendation = recommendation;
-    }
-
-    public void setVideoContentSummary(String videoContentSummary) {
-        this.videoContentSummary = videoContentSummary;
+    public void setCategories(CategoryBreakdown categories) {
+        this.categories = categories;
     }
 
     @Override
@@ -105,12 +58,7 @@ public class SentimentAnalyzeResponse {
                 ", sourceId='" + sourceId + '\'' +
                 ", sourceUrl='" + sourceUrl + '\'' +
                 ", analyzedComments=" + analyzedComments +
-                ", positive=" + positive +
-                ", negative=" + negative +
-                ", neutral=" + neutral +
-                ", overallSummary='" + overallSummary + '\'' +
-                ", recommendation='" + recommendation + '\'' +
-                ", videoContentSummary='" + videoContentSummary + '\'' +
+                ", categories=" + categories +
                 '}';
     }
 }
